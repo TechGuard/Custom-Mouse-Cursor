@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" hotspot="4.5,10.5" viewBox="0 0 32 32">
+  <line stroke="#fff" stroke-width="2.5" x1="4.5" y1="3.75" x2="4.5" y2="17.25"/>
+  <path fill="none" stroke="#fff" d="M0.25,1.25L4.5,5.5,8.75,1.25"/>
+  <path fill="none" stroke="#fff" d="M0.25,19.75L4.5,15.75l4.25,4"/>
+  <line stroke="#000" x1="4.5" y1="3.75" x2="4.5" y2="17.25"/>
+  <path fill="none" stroke="#000" d="M1,0.5L4.5,4,8,0.5"/>
+  <path fill="none" stroke="#000" d="M0.951,20.562L4.5,17.119l3.549,3.443"/>
+</svg>

@@ -1,0 +1,1 @@
+python svg_to_cur .
