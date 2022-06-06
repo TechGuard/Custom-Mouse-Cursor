@@ -66,8 +66,6 @@ def main(args):
             files += glob.glob(os.path.join(filepath, '**', '*.svg'))
         elif filepath.endswith('.svg'):
             files.append(filepath)
-        else:
-            files.append('%s.svg'%filepath)
     
     for file in files:
         filename = file[:-len('.svg')]
