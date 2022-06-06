@@ -1,14 +1,16 @@
-from io import BytesIO
+import os, builtins
 
-from PIL import Image, ImageFile, CurImagePlugin
+from io import BytesIO
+from typing import BinaryIO
+from PIL import Image, CurImagePlugin
 from PIL._binary import o8
 from PIL._binary import o16le as o16
 from PIL._binary import o32le as o32
 
-_MAGIC = b"\0\0\2\0"
+_MAGIC_CUR = b"\0\0\2\0"
 
-def _save(im, fp, filename):
-    fp.write(_MAGIC)  # (2+2)
+def _save_cur(im, fp, filename):
+    fp.write(_MAGIC_CUR)  # (2+2)
     width, height = im.size
 
     hotspot = im.encoderinfo.get(
@@ -61,4 +63,71 @@ def _save(im, fp, filename):
         offset = offset + bytes_len
         fp.seek(current)
 
-Image.register_save(CurImagePlugin.CurImageFile.format, _save)
+Image.register_save(CurImagePlugin.CurImageFile.format, _save_cur)
+
+def _save_ani(fp: BinaryIO, frames, seconds_per_frame: float, hotspot):
+    # RIFF struct
+    fp.write(b"RIFF") # ID(4)
+    riff_size_offset = fp.tell()
+    fp.write(o32(0)) # headerSize(4)
+    fp.write(b"ACON") # headerID(4)
+
+    # 'anih' chunk
+    fp.write(b"anih") # chunkHeader(4)
+    fp.write(o32(36)) # chunkHeaderSize(4)
+
+    fp.write(o32(36)) # headerSize(4)
+    fp.write(o32(len(frames))) # numFrames(4)
+    fp.write(o32(len(frames))) # numSteps(4)
+    fp.write(o32(0)) # width(4)
+    fp.write(o32(0)) # height(4)
+    fp.write(o32(0)) # bitCount(4)
+    fp.write(o32(0)) # numPlanes(4)
+    fp.write(o32(round(seconds_per_frame * 60))) # displayRate(4)
+    fp.write(o32(1)) # flags(4)
+
+    # LIST struct
+    fp.write(b"LIST") # ID(4)
+    list_size_offset = fp.tell()
+    fp.write(o32(0)) # headerSize(4)
+    fp.write(b"fram") # headerID(4)
+
+    for frame in frames:
+        # 'icon' chunk
+        image_io = BytesIO()
+        frame.save(image_io, "cur", hotspot=hotspot)
+        image_io.seek(0)
+        image_bytes = image_io.read()
+
+        fp.write(b"icon") # chunkHeader(4)
+        fp.write(o32(len(image_bytes))) # chunkHeaderSize(4)
+        fp.write(image_bytes)
+
+        # padding
+        if fp.tell() & 1:
+            fp.write(o8(0))
+    
+    current = fp.tell()
+
+    list_size = current - (list_size_offset + 4)
+    fp.seek(list_size_offset)
+    fp.write(o32(list_size))
+
+    riff_size = current - (riff_size_offset + 4)
+    fp.seek(riff_size_offset)
+    fp.write(o32(riff_size))
+
+def save_ani(filename, frames, seconds_per_frame: float, hotspot=(0,0)):
+    created = not os.path.exists(filename)
+    fp = builtins.open(filename, "w+b")
+    try:
+        _save_ani(fp, frames, seconds_per_frame, hotspot)
+    except Exception:
+        fp.close()
+        if created:
+            try:
+                os.remove(filename)
+            except PermissionError:
+                pass
+        raise
+    fp.close()
