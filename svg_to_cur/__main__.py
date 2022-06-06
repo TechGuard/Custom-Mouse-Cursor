@@ -1,10 +1,17 @@
-import sys, os, glob
+import sys, os, glob, re
 import cairosvg
 from cairosvg import surface
 from cairosvg.parser import Tree
 from cairosvg.helpers import node_format
 from PIL import Image
 import CurImagePlugin
+
+RE_SPLIT = re.compile(r'[^, ]+')
+
+def parse_hotspot(tree: Tree):
+    view_width, view_height, _ = node_format(None, tree)
+    hotspot = [float(x) for x in RE_SPLIT.findall(tree.get('hotspot', '0 0'))]
+    return (hotspot[0] / view_width, hotspot[1] / view_height)
 
 def convert(path):
     if path.endswith('.svg'):
@@ -22,12 +29,11 @@ def convert(path):
         instance.finish()
 
         # Read hotspot
-        hotspot = [float(x) for x in tree.get('hotspot', '0,0').split(',')]
-        width, height, _ = node_format(instance, tree)
+        hotspot = parse_hotspot(tree)
         
         # To CUR
         img = Image.open("%s.png"%filename)
-        img.save("%s.cur"%filename, hotspot=(hotspot[0]/width*256, hotspot[1]/height*256))
+        img.save("%s.cur"%filename, hotspot=(hotspot[0]*256, hotspot[1]*256))
 
 if __name__ == '__main__':
     if (len(sys.argv) < 2):
