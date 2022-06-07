@@ -1,8 +1,8 @@
+$zipFileName = 'package.zip'
 $files = Get-ChildItem -Include *.cur,*.ani,*.inf -Recurse
 
 # create zip file
-$zipFileName = 'package.zip'
-Remove-Item $zipFileName
+if (Test-Path $zipFileName) { Remove-Item $zipFileName }
 $zip = [System.IO.Compression.ZipFile]::Open($zipFileName, [System.IO.Compression.ZipArchiveMode]::Create)
 
 # write entries with relative paths as names
