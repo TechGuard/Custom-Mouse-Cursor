@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" hotspot="16 16" viewBox="0 0 32 32">
-  <path stroke="#fff" stroke-width="5" stroke-linejoin="round" d="M13.25,10.492L16,8.242l2.75,2.25L16,7.742Z"/>
-  <path stroke="#000" stroke-width="3" stroke-linejoin="round" d="M13.25,10.492L16,8.242l2.75,2.25L16,7.742Z"/>
-  <path stroke="#fff" stroke-width="5" stroke-linejoin="round" d="M13.25,21.5L16,23.75l2.75-2.25L16,24.25Z"/>
-  <path stroke="#000" stroke-width="3" stroke-linejoin="round" d="M13.25,21.5L16,23.75l2.75-2.25L16,24.25Z"/>
+  <path stroke="#fff" stroke-width="5" stroke-linejoin="round" d="M13.25,7.492L16,5.242L18.75,7.492L16,4.742L13.25,7.492Z"/>
+  <path stroke="#000" stroke-width="3" stroke-linejoin="round" d="M13.25,7.492L16,5.242L18.75,7.492L16,4.742L13.25,7.492Z"/>
+  <path stroke="#fff" stroke-width="5" stroke-linejoin="round" d="M13.25,24.5L16,26.75L18.75,24.5L16,27.25L13.25,24.5Z"/>
+  <path stroke="#000" stroke-width="3" stroke-linejoin="round" d="M13.25,24.5L16,26.75L18.75,24.5L16,27.25L13.25,24.5Z"/>
 </svg>
