@@ -1,3 +1,5 @@
 __pycache__/
 /package.zip
 *.png
+*.cur
+*.ani
